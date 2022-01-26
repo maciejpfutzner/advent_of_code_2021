@@ -1,0 +1,252 @@
+inp w # w=d1
+mul x 0 # nop
+add x z # nop
+mod x 26 # nop
+div z 1 # nop
+add x 12 # x is 12
+eql x w # cannot be equal since w is 1-9, so x=0
+eql x 0 # yes, x=1
+mul y 0 # nop
+add y 25 # y=25
+mul y x # nop
+add y 1 # y=26
+mul z y # z=0
+mul y 0 # y=0
+add y w # first line that really matters, y=(1st digit)
+add y 15 # y = d1+15
+mul y x # y*1 = y = d1+15
+add z y # z= y= d1+15
+inp w # w= d2
+mul x 0 # x=0
+add x z # x= z= d1+15
+mod x 26 # x= x%26, but x is 16-25, so it stays x= d1+15
+div z 1 # z= z/1 = z= d1+15
+add x 14 # x= d1+29
+eql x w # d1+29 >> d2, so x=0
+eql x 0 # True, x=1
+mul y 0 # y=0
+add y 25 # y=25
+mul y x # nop
+add y 1 # y=26          <<< After line 30: w=d2, x=1, y=26, z=d1+15
+mul z y # z= (d1+15)*26
+mul y 0 # y=0
+add y w # y= w= d2
+add y 12 # y=d2+12
+mul y x # y= d2+12
+add z y # z= (d1+15)*26 + d2+12
+inp w # w=d3
+mul x 0 # x=0
+add x z # x= (d1+15)*26 + d2+12
+mod x 26 # x = ((d1+15)*26 + d2+12) %26 = d2+12
+div z 1 # nop
+add x 11 # x = d2+23
+eql x w # x=0 (d2+23 >> d3)
+eql x 0 # True, x=1
+mul y 0 # y=0 
+add y 25 # y=25
+mul y x # nop
+add y 1 # y=26
+mul z y # z = ((d1+15)*26 + d2+12) * 26
+mul y 0 # y=0           <<< After line 50: w=d3, x=1, y=0, z= ((d1+15)*26 + d2+12)*26
+add y w # y= w= d3
+add y 15 # y = d3+15
+mul y x # nop
+add z y # z= ((d1+15)*26 + d2+12)*26 + d3+15
+inp w # w=d4
+mul x 0 # x=0
+add x z # x= ((d1+15)*26 + d2+12)*26 + d3+15
+mod x 26 # x= (((d1+15)*26 + d2+12)*26 + d3+15) % 26 = (d3+15)%26 = d3+15
+div z 26 # z= (((d1+15)*26 + d2+12)*26 + d3+15) // 26 = (d1+15)*26 + d2+12
+add x -9 # x= d3+15-9 = d3+6
+eql x w # !HERE! x=1 if d3+6 == d4 else 0, assume x=1
+eql x 0 # x=0 (flip x=0->1 or x=1->0)
+mul y 0 # y=0
+add y 25 # y=25
+mul y x # y=0
+add y 1 # y=1
+mul z y # z= ((d1+15)*26 + d2+12)*26
+mul y 0 # y=0
+add y w # y=d4
+add y 12 # y= d4+12       <<< After line 70, if d4=d3+6: w=d4, x=0, y=0, z=(d1+15)*26 + d2+12
+mul y x # y=0
+add z y # z= (d1+15)*26 + d2+12
+inp w # w=d5
+mul x 0 # x=0
+add x z # x= (d1+15)*26 + d2+12
+mod x 26 # x= ((d1+15)*26 + d2+12)%26 = d2+12
+div z 26 # z= ((d1+15)*26 + d2+12)//26 = d1+15
+add x -7 # x= d2+12-7 = d2+5
+eql x w # x= 1 if d2+5 == d5 else 0
+eql x 0 # x= 0, assuming d5 = d2+5
+mul y 0 # y=0
+add y 25 # y=25
+mul y x # y=0
+add y 1 # y=1
+mul z y # z= d1+15
+mul y 0 # y=0
+add y w # y= d5
+add y 15 # y = d5+15
+mul y x # y=0
+add z y # z= d1+15   <<< After line 90: w=d5, x=1, y=d5+15, z=d1+15
+inp w # w=d6
+mul x 0 # x=0
+add x z # x= d1+15
+mod x 26 # x= (d1+15)%26 = d1+15
+div z 1 # nop
+add x 11 # x= d1+26
+eql x w # x=0 (d1+26 is always bigger than d6)
+eql x 0 # x=1
+mul y 0 # y=0
+add y 25 # y=25
+mul y x 
+add y 1 # y=26
+mul z y # z= (d1+15) *26
+mul y 0
+add y w # y=d6
+add y 2 # y=d6+2
+mul y x
+add z y # z= (d1+15)*26 +d6+2
+inp w # w=d7
+mul x 0
+add x z # x= (d1+15)*26 + d6+2
+mod x 26 # x= d6+2
+div z 26 # z= ((d1+15)*26 +d6+2) //26 = d1+15
+add x -1 # x= d6+1
+eql x w # x= 1 if d7 == d6+1 else 0
+eql x 0 x=0 assuming d7 = d6+1
+mul y 0 
+add y 25
+mul y x # y=0 if assumption
+add y 1 # y=1               <<< After line 120, if d7 = d6+1: w=d7, x=0, y=1, z=d1+15
+mul z y # z=d1+15
+mul y 0
+add y w # y=d7
+add y 11 # y=d7+11
+mul y x # y=0 !HERE! this would be different if previous assumption doesn't hold
+add z y # nop
+inp w # w=d8
+mul x 0 
+add x z # x= d1+15
+mod x 26 # x= (d1+15) %26 = d1+15
+div z 26 # z= (d1+15) //26 = 0
+add x -16 # x= d1+15-16 = d1-1
+eql x w # x= 1 if d8 == d1-1 else 0
+eql x 0 # x= 0 assuming d8 = d5-1
+mul y 0 
+add y 25 # y=25
+mul y x # y=0 if d8+1 = d5
+add y 1 # y=1
+mul z y # z=0
+mul y 0 
+add y w # y=d8
+add y 15 # y= d8+15
+mul y x # y=0 !HERE! this would be different if previous assumption doesn't hold
+add z y # z=0
+inp w # w=d9
+mul x 0 
+add x z # x=0
+mod x 26 # nop
+div z 1 
+add x 11 # x = 11        <<< After line 150, if d8-d5-1: w=d9, x=11, y=0, z=0
+eql x w # x=0 (11 > d9 always)
+eql x 0 # x=1
+mul y 0 
+add y 25
+mul y x 
+add y 1 # y=26
+mul z y # z=0
+mul y 0 
+add y w
+add y 10 # y= d9+10
+mul y x # nop
+add z y # z= d9+10
+inp w # w=d10
+mul x 0
+add x z
+mod x 26 # x= (d9+10) %26 = d9+10
+div z 26 # z= (d9+10) //26 = 0
+add x -15 # x = d9+10-15 = d9-5
+eql x w # x= 1 if d10 == d9-5 else 0
+eql x 0 # x=0 assuming d10 = d9-5
+mul y 0
+add y 25 # y=25
+mul y x # y=0 !HERE! this would be different if previous assumption doesn't hold
+add y 1 # y=1
+mul z y # nop
+mul y 0
+add y w
+add y 2 # y= d10+2
+mul y x # y=0
+add z y # z=0            <<< After line 180, if d10 = d9-1: w=d10, x=0, y=0, z=0
+inp w # w=d11
+mul x 0 
+add x z 
+mod x 26 # x=0
+div z 1
+add x 10 # x=10
+eql x w # x=0 (10 >> d11)
+eql x 0 # x=1
+mul y 0
+add y 25
+mul y x
+add y 1 # y=26
+mul z y # z = 0
+mul y 0
+add y w # y=d11
+add y 0
+mul y x # nop
+add z y # z=d11
+inp w # w=d12
+mul x 0
+add x z
+mod x 26 # x= d11%26 = d11
+div z 1
+add x 12 # x= d11+12
+eql x w # x=0 (d11+12 >> d12)
+eql x 0 # x=1
+mul y 0
+add y 25
+mul y x
+add y 1 # y=26
+mul z y # z= d11*26
+mul y 0
+add y w # y=d12
+add y 0
+mul y x # nop
+add z y # z= d11*26+d12
+inp w # w= d13
+mul x 0
+add x z
+mod x 26 # x= (d11*26 +d12) %26 = d12
+div z 26 # z= (d11*26 +d12) //26 = d11
+add x -4 # x = d12-4
+eql x w # x= 1 if d13 == d12-4 else 0
+eql x 0 # x=0 assuming d13 - d12-4
+mul y 0
+add y 25
+mul y x # y=0 !HERE! this would be different if previous assumption doesn't hold
+add y 1 # y=1
+mul z y # z= (d1+15)*26 + d11
+mul y 0
+add y w # y= d13
+add y 15 
+mul y x # y=0
+add z y # nop
+inp w # w=d14
+mul x 0 
+add x z 
+mod x 26 # x= ((d1+15)*26 + d11) %26 = d11
+div z 26 # z= ((d1+15)*26 + d11) //26 = d1+15
+add x 0
+eql x w # x= 1 if d11 == d14 else 0
+eql x 0 # x=0 assuming d11=d14
+mul y 0
+add y 25
+mul y x # y=0
+add y 1
+mul z y # nop
+mul y 0
+add y w
+add y 15 # y = d14+15
+mul y x # y=0
+add z y # z = d1+15...
